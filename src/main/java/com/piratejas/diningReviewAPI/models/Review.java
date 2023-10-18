@@ -1,8 +1,7 @@
 package com.piratejas.diningReviewAPI.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.piratejas.diningReviewAPI.enums.ReviewStatus;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -22,4 +21,7 @@ public class Review {
     private Integer eggScore;
     private Integer dairyScore;
     private String comment;
+
+    @Enumerated(EnumType.STRING)
+    private ReviewStatus status;
 }
