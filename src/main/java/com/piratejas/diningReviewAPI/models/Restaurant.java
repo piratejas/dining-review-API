@@ -21,8 +21,9 @@ public class Restaurant {
     @Enumerated(EnumType.STRING)
     private CuisineType type;
 
-    private String email;
-    private String telephone;
+    private String address;
+    private String phoneNumber;
+    private String website;
 
     private Float peanutScore;
     private Float eggScore;

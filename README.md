@@ -19,8 +19,8 @@
 
 - Java
 - Spring / Spring Boot
-- Spring Web
 - Spring Data JPA
+- Maven
 - H2
 - Lombok
 - Jackson
