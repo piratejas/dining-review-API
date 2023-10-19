@@ -4,8 +4,13 @@ public enum CuisineType {
     AMERICAN,
     CHINESE,
     FRENCH,
+    GREEK,
+    INDIAN,
     ITALIAN,
     JAPANESE,
+    KOREAN,
+    LEVANTINE,
     MEXICAN,
-    THAI
+    THAI,
+    TURKISH
 }

@@ -21,7 +21,11 @@ public class Restaurant {
     @Enumerated(EnumType.STRING)
     private CuisineType type;
 
-    private String address;
+    private String addressLine1;
+    private String city;
+    private String state;
+    private String zipCode;
+
     private String phoneNumber;
     private String website;
 
