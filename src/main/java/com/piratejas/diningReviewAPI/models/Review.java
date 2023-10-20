@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "REVIEWS")
 @Getter
 @Setter
 @RequiredArgsConstructor

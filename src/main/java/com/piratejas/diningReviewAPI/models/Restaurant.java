@@ -8,12 +8,13 @@ import lombok.Setter;
 
 
 @Entity
+@Table(name = "RESTAURANTS")
 @Getter
 @Setter
 @RequiredArgsConstructor
 public class Restaurant {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
