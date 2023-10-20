@@ -25,3 +25,9 @@
 - Lombok
 - Jackson
 - cURL
+
+
+## Extended Features
+- Logging
+- Automated testing (unit & integration)
+- Lightweight frontend

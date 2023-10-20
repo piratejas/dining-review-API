@@ -13,7 +13,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class Review {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String submittedBy;
