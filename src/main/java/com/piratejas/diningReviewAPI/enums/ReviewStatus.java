@@ -2,6 +2,6 @@ package com.piratejas.diningReviewAPI.enums;
 
 public enum ReviewStatus {
     PENDING,
-    ACCEPTED,
+    APPROVED,
     REJECTED
 }

@@ -31,7 +31,7 @@ public class AdminController {
     }
 
     @PutMapping("/reviews/{reviewId}")
-    public void performReviewAction(@PathVariable Long reviewId, @RequestBody AdminReviewAction adminReviewAction) {
+    public void approveReview(@PathVariable Long reviewId, @RequestBody AdminReviewAction adminReviewAction) {
         Optional<Review> optionalReview = reviewRepository.findById(reviewId);
 
         if (optionalReview.isEmpty()) {
@@ -45,8 +45,8 @@ public class AdminController {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        if (adminReviewAction.getAcceptReview()) {
-            review.setStatus(ReviewStatus.ACCEPTED);
+        if (adminReviewAction.getApproveReview()) {
+            review.setStatus(ReviewStatus.APPROVED);
         } else {
             review.setStatus(ReviewStatus.REJECTED);
         }
@@ -57,7 +57,7 @@ public class AdminController {
 
     // Helpers
     private void updateRestaurantScores(Restaurant restaurant) {
-        List<Review> reviews = reviewRepository.findByStatusAndRestaurantId(ReviewStatus.ACCEPTED, restaurant.getId());
+        List<Review> reviews = reviewRepository.findByStatusAndRestaurantId(ReviewStatus.APPROVED, restaurant.getId());
         if (reviews.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
