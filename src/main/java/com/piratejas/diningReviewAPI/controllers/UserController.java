@@ -48,7 +48,7 @@ public class UserController {
 
         Optional<User> optionalExistingUser = userRepository.findByName(name);
         if (optionalExistingUser.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username not found.");
         }
 
         User existingUser = optionalExistingUser.get();
@@ -63,7 +63,7 @@ public class UserController {
 
         Optional<User> optionalExistingUser = userRepository.findByName(name);
         if (optionalExistingUser.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username not found.");
         }
 
         User existingUser = optionalExistingUser.get();
@@ -78,19 +78,19 @@ public class UserController {
         // Check if username already exists
         Optional<User> existingUser = userRepository.findByName(user.getName());
         if (existingUser.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username is already in use.");
         }
     }
 
     private void validateNameInRequest(String name) {
         if (ObjectUtils.isEmpty(name)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is missing.");
         }
     }
 
     private void patchExistingUser(User existingUser, User userUpdate) {
         if (ObjectUtils.isEmpty(userUpdate.getName())) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Username is missing.");
         }
         if (!ObjectUtils.isEmpty(userUpdate.getCity())) {
             existingUser.setCity(userUpdate.getCity());

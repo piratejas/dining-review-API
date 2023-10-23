@@ -34,7 +34,7 @@ public class ReviewController {
 
         Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(review.getRestaurantId());
         if (optionalRestaurant.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid restaurant Id.");
         }
 
         review.setStatus(ReviewStatus.PENDING);
@@ -44,20 +44,20 @@ public class ReviewController {
     // Helpers
     private void validateReview(Review review) {
         if (ObjectUtils.isEmpty(review.getSubmittedBy())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User information is missing.");
         }
 
         if (ObjectUtils.isEmpty(review.getRestaurantId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Restaurant Id is missing.");
         }
 
         if (ObjectUtils.isEmpty(review.getDairyScore()) && ObjectUtils.isEmpty(review.getEggScore()) && ObjectUtils.isEmpty(review.getPeanutScore())) {
-            throw new ResponseStatusException((HttpStatus.BAD_REQUEST));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Review must contain at least one rating.");
         }
 
         Optional<User> optionalUser = userRepository.findByName(review.getSubmittedBy());
         if (optionalUser.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "User is not registered.");
         }
     }
 }

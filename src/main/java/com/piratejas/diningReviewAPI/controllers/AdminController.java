@@ -35,14 +35,14 @@ public class AdminController {
         Optional<Review> optionalReview = reviewRepository.findById(reviewId);
 
         if (optionalReview.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Review does not exist.");
         }
 
         Review review = optionalReview.get();
 
         Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(review.getRestaurantId());
         if (optionalRestaurant.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid restaurant Id.");
         }
 
         if (adminReviewAction.getApproveReview()) {
@@ -59,7 +59,7 @@ public class AdminController {
     private void updateRestaurantScores(Restaurant restaurant) {
         List<Review> reviews = reviewRepository.findByStatusAndRestaurantId(ReviewStatus.APPROVED, restaurant.getId());
         if (reviews.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            return;
         }
 
         int peanutSum = 0;
