@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AdminReviewAction {
-    private Boolean isAccepted;
+    private Boolean acceptReview;
 }
