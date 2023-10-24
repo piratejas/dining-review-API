@@ -10,9 +10,4 @@ public class UserDTO {
 
     private String city;
     private String state;
-    private String zipCode;
-
-    private Boolean peanutAllergy;
-    private Boolean eggAllergy;
-    private Boolean dairyAllergy;
 }

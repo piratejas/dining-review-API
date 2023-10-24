@@ -1,6 +1,7 @@
 package com.piratejas.diningReviewAPI.models;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.piratejas.diningReviewAPI.enums.CuisineType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -9,6 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RestaurantDTO {
     private String name;
 

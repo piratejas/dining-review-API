@@ -59,6 +59,29 @@ public class RestaurantController {
         return convertRestaurantToDTO(restaurant);
     }
 
+    @GetMapping("/search")
+    public List<RestaurantDTO> searchRestaurants(@RequestParam(name = "zipCode") String zipCode, @RequestParam(name = "allergy") String allergy) {
+        validateZipCode(zipCode);
+
+        Iterable<Restaurant> restaurants;
+        if (allergy.equalsIgnoreCase("peanut")) {
+            restaurants = restaurantRepository.findByZipCodeAndPeanutScoreNotNullOrderByPeanutScore(zipCode);
+        } else if (allergy.equalsIgnoreCase("dairy")) {
+            restaurants = restaurantRepository.findByZipCodeAndDairyScoreNotNullOrderByDairyScore(zipCode);
+        } else if (allergy.equalsIgnoreCase("egg")) {
+            restaurants = restaurantRepository.findByZipCodeAndEggScoreNotNullOrderByEggScore(zipCode);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Allergy not specified.");
+        }
+
+        List<RestaurantDTO> allRestaurantsDTO = new ArrayList<>();
+        for (Restaurant restaurant : restaurants) {
+            RestaurantDTO restaurantDTO = convertRestaurantToDTO(restaurant);
+            allRestaurantsDTO.add(restaurantDTO);
+        }
+        return allRestaurantsDTO;
+    }
+
     // Helpers
     private void validateNewRestaurant(Restaurant restaurant) {
         if (ObjectUtils.isEmpty(restaurant.getName())) {
@@ -73,8 +96,8 @@ public class RestaurantController {
         }
     }
 
-    private void validateZipCode(String zipcode) {
-        if (!zipCodePattern.matcher(zipcode).matches()) {
+    private void validateZipCode(String zipCode) {
+        if (!zipCodePattern.matcher(zipCode).matches()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid zip code.");
         }
     }
@@ -90,10 +113,10 @@ public class RestaurantController {
         restaurantDTO.setZipCode(restaurant.getZipCode());
         restaurantDTO.setPhoneNumber(restaurant.getPhoneNumber());
         restaurantDTO.setWebsite(restaurant.getWebsite());
-        restaurantDTO.setPeanutScore(df.format(restaurant.getPeanutScore()));
-        restaurantDTO.setDairyScore(df.format(restaurant.getDairyScore()));
-        restaurantDTO.setEggScore(df.format(restaurant.getEggScore()));
-        restaurantDTO.setOverallScore(df.format(restaurant.getOverallScore()));
+        restaurantDTO.setPeanutScore(restaurant.getPeanutScore() != null ? df.format(restaurant.getPeanutScore()) : null);
+        restaurantDTO.setDairyScore(restaurant.getDairyScore() != null ? df.format(restaurant.getDairyScore()) : null);
+        restaurantDTO.setEggScore(restaurant.getEggScore() != null ? df.format(restaurant.getEggScore()) : null);
+        restaurantDTO.setOverallScore(restaurant.getOverallScore() != null ? df.format(restaurant.getOverallScore()) : null);
 
         return restaurantDTO;
     }

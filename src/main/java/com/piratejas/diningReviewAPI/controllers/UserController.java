@@ -118,10 +118,6 @@ public class UserController {
         userDTO.setName(user.getName());
         userDTO.setCity(user.getCity());
         userDTO.setState(user.getState());
-        userDTO.setZipCode(user.getZipCode());
-        userDTO.setEggAllergy(user.getEggAllergy());
-        userDTO.setDairyAllergy(user.getDairyAllergy());
-        userDTO.setPeanutAllergy(user.getPeanutAllergy());
 
         return userDTO;
     }
