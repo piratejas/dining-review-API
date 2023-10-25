@@ -60,6 +60,7 @@ public class RestaurantController {
     }
 
     @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
     public List<RestaurantDTO> searchRestaurants(@RequestParam(name = "zipCode") String zipCode, @RequestParam(name = "allergy") String allergy) {
         validateZipCode(zipCode);
 
