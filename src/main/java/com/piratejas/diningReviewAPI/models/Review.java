@@ -18,9 +18,9 @@ public class Review {
 
     private String submittedBy;
     private Long restaurantId;
-    private Integer peanutScore;
-    private Integer eggScore;
-    private Integer dairyScore;
+    private Float peanutScore;
+    private Float eggScore;
+    private Float dairyScore;
     private String comment;
 
     @Enumerated(EnumType.STRING)

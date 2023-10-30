@@ -1,5 +1,6 @@
 package com.piratejas.diningReviewAPI.controllers;
 
+import static com.piratejas.diningReviewAPI.utils.TestUtils.createValidReview;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,27 +12,36 @@ import com.piratejas.diningReviewAPI.repositories.ReviewRepository;
 import com.piratejas.diningReviewAPI.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
 public class ReviewControllerTest {
+
+    @InjectMocks
     private ReviewController reviewController;
+
+    @Mock
     private ReviewRepository reviewRepository;
+    @Mock
     private UserRepository userRepository;
+    @Mock
     private RestaurantRepository restaurantRepository;
 
+    private Review review;
+
     @BeforeEach
-    public void setUp() {
-        reviewRepository = mock(ReviewRepository.class);
-        userRepository = mock(UserRepository.class);
-        restaurantRepository = mock(RestaurantRepository.class);
-        reviewController = new ReviewController(reviewRepository, userRepository, restaurantRepository);
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        review = createValidReview();
     }
 
     @Test
-    public void testAddReview_ValidReview() {
-        Review review = createValidReview();
+    void testAddReview_ValidReview() {
         when(restaurantRepository.findById(review.getRestaurantId())).thenReturn(Optional.of(new Restaurant()));
         when(userRepository.findByName(review.getSubmittedBy())).thenReturn(Optional.of(new User()));
 
@@ -40,50 +50,53 @@ public class ReviewControllerTest {
     }
 
     @Test
-    public void testAddReview_InvalidRestaurantId() {
-        Review review = createValidReview();
+    void testAddReview_InvalidRestaurantId() {
         when(restaurantRepository.findById(review.getRestaurantId())).thenReturn(Optional.empty());
         when(userRepository.findByName(review.getSubmittedBy())).thenReturn(Optional.of(new User()));
-        Throwable e = assertThrows(ResponseStatusException.class, () -> reviewController.addReview(review));
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> reviewController.addReview(review));
 
-        assertEquals("422 UNPROCESSABLE_ENTITY \"Invalid restaurant Id.\"", e.getMessage());
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, e.getStatusCode());
+        assertEquals("Invalid restaurant Id.", e.getReason());
         verify(reviewRepository, never()).save(review);
     }
 
     @Test
-    public void testAddReview_MissingUserInfo() {
-        Review review = new Review();
-        review.setRestaurantId(1L);
+    void testAddReview_MissingUserInfo() {
+        review.setSubmittedBy(null);
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> reviewController.addReview(review));
 
-        assertThrows(ResponseStatusException.class, () -> reviewController.addReview(review));
+        assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+        assertEquals("User information is missing.", e.getReason());
         verify(reviewRepository, never()).save(review);
     }
 
     @Test
-    public void testAddReview_MissingRatings() {
-        Review review = new Review();
-        review.setRestaurantId(1L);
-        review.setSubmittedBy("User123");
+    void testAddReview_MissingRestaurantId() {
+        review.setRestaurantId(null);
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> reviewController.addReview(review));
 
-        assertThrows(ResponseStatusException.class, () -> reviewController.addReview(review));
+        assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+        assertEquals("Restaurant Id is missing.", e.getReason());
         verify(reviewRepository, never()).save(review);
     }
 
     @Test
-    public void testAddReview_UserNotRegistered() {
-        Review review = createValidReview();
+    void testAddReview_MissingRatings() {
+        review.setDairyScore(null);
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> reviewController.addReview(review));
+
+        assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+        assertEquals("Review must contain at least one rating.", e.getReason());
+        verify(reviewRepository, never()).save(review);
+    }
+
+    @Test
+    void testAddReview_UserNotRegistered() {
         when(restaurantRepository.findById(review.getRestaurantId())).thenReturn(Optional.of(new Restaurant()));
         when(userRepository.findByName(review.getSubmittedBy())).thenReturn(Optional.empty());
+        Throwable e = assertThrows(ResponseStatusException.class, () -> reviewController.addReview(review));
 
-        assertThrows(ResponseStatusException.class, () -> reviewController.addReview(review));
+        assertEquals("422 UNPROCESSABLE_ENTITY \"User is not registered.\"", e.getMessage());
         verify(reviewRepository, never()).save(review);
-    }
-
-    private Review createValidReview() {
-        Review review = new Review();
-        review.setSubmittedBy("User123");
-        review.setRestaurantId(1L);
-        review.setDairyScore(5);
-        return review;
     }
 }

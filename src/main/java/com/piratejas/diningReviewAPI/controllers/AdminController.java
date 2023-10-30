@@ -1,13 +1,13 @@
 package com.piratejas.diningReviewAPI.controllers;
 
 import com.piratejas.diningReviewAPI.enums.ReviewStatus;
+import com.piratejas.diningReviewAPI.utils.RestaurantUtils;
 import com.piratejas.diningReviewAPI.models.AdminReviewAction;
 import com.piratejas.diningReviewAPI.models.Restaurant;
 import com.piratejas.diningReviewAPI.models.Review;
 import com.piratejas.diningReviewAPI.repositories.RestaurantRepository;
 import com.piratejas.diningReviewAPI.repositories.ReviewRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -45,65 +45,18 @@ public class AdminController {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid restaurant Id.");
         }
 
+        Restaurant restaurant = optionalRestaurant.get();
+        List<Review> reviews = reviewRepository.findByStatusAndRestaurantId(ReviewStatus.APPROVED, restaurant.getId());
+
+
         if (adminReviewAction.getApproveReview()) {
             review.setStatus(ReviewStatus.APPROVED);
+            Restaurant updatedRestaurant =  RestaurantUtils.updateRestaurantScores(restaurant, reviews);
+            restaurantRepository.save(updatedRestaurant);
         } else {
             review.setStatus(ReviewStatus.REJECTED);
         }
 
         reviewRepository.save(review);
-        updateRestaurantScores(optionalRestaurant.get());
-    }
-
-    // Helpers
-    private void updateRestaurantScores(Restaurant restaurant) {
-        List<Review> reviews = reviewRepository.findByStatusAndRestaurantId(ReviewStatus.APPROVED, restaurant.getId());
-        if (reviews.isEmpty()) {
-            return;
-        }
-
-        int peanutSum = 0;
-        int peanutCount = 0;
-        int dairySum = 0;
-        int dairyCount = 0;
-        int eggSum = 0;
-        int eggCount = 0;
-        for (Review r : reviews) {
-            if (!ObjectUtils.isEmpty(r.getPeanutScore())) {
-                peanutSum += r.getPeanutScore();
-                peanutCount++;
-            }
-            if (!ObjectUtils.isEmpty(r.getDairyScore())) {
-                dairySum += r.getDairyScore();
-                dairyCount++;
-            }
-            if (!ObjectUtils.isEmpty(r.getEggScore())) {
-                eggSum += r.getEggScore();
-                eggCount++;
-            }
-        }
-
-        int totalCount = peanutCount + dairyCount + eggCount ;
-        int totalSum = peanutSum + dairySum + eggSum;
-
-        float overallScore = (float) totalSum / totalCount;
-        restaurant.setOverallScore(overallScore);
-
-        if (peanutCount > 0) {
-            float peanutScore = (float) peanutSum / peanutCount;
-            restaurant.setPeanutScore(peanutScore);
-        }
-
-        if (dairyCount > 0) {
-            float dairyScore = (float) dairySum / dairyCount;
-            restaurant.setDairyScore(dairyScore);
-        }
-
-        if (eggCount > 0) {
-            float eggScore = (float) eggSum / eggCount;
-            restaurant.setEggScore(eggScore);
-        }
-
-        restaurantRepository.save(restaurant);
     }
 }
