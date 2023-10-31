@@ -84,4 +84,37 @@ public class TestUtils {
 
         return reviews;
     }
+
+    public static List<Restaurant> createRestaurantsWithAllergyScores() {
+        List<Restaurant> restaurants = new ArrayList<>();
+
+        Restaurant restaurant1 = createValidRestaurant();
+        restaurant1.setName("Restaurant 1");
+        restaurant1.setType(CuisineType.AMERICAN);
+        restaurant1.setPeanutScore(4.5f);
+        restaurant1.setDairyScore(3.5f);
+        restaurant1.setEggScore(4.0f);
+        restaurant1.setOverallScore(4.0f);
+        restaurants.add(restaurant1);
+
+        Restaurant restaurant2 = createValidRestaurant();
+        restaurant2.setName("Restaurant 2");
+        restaurant2.setType(CuisineType.ITALIAN);
+        restaurant2.setPeanutScore(4.2f);
+        restaurant2.setDairyScore(3.8f);
+        restaurant2.setEggScore(4.1f);
+        restaurant2.setOverallScore(4.1f);
+        restaurants.add(restaurant2);
+
+        Restaurant restaurant3 = createValidRestaurant();
+        restaurant2.setName("Restaurant 3");
+        restaurant2.setType(CuisineType.LEVANTINE);
+        restaurant2.setPeanutScore(4.2f);
+        restaurant2.setDairyScore(3.8f);
+        restaurant2.setEggScore(4.1f);
+        restaurant2.setOverallScore(4.1f);
+        restaurants.add(restaurant3);
+
+        return restaurants;
+    }
 }

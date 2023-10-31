@@ -55,6 +55,7 @@ public class RestaurantUtils {
 
         return restaurantDTO;
     }
+
     public static Restaurant updateRestaurantScores(Restaurant restaurant, List<Review> reviews) {
 
         if (reviews.isEmpty()) {

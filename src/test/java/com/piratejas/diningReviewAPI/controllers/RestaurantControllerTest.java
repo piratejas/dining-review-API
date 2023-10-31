@@ -1,5 +1,6 @@
 package com.piratejas.diningReviewAPI.controllers;
 
+import static com.piratejas.diningReviewAPI.utils.TestUtils.createRestaurantsWithAllergyScores;
 import static com.piratejas.diningReviewAPI.utils.TestUtils.createValidRestaurant;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -119,6 +120,19 @@ class RestaurantControllerTest {
         assertEquals("Testaurant", result.getName());
         assertEquals(CuisineType.THAI, result.getType());
         verify(restaurantRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    public void testSearchRestaurantsWithValidAllergy() {
+        List<Restaurant> restaurants = createRestaurantsWithAllergyScores();
+
+       when(restaurantRepository.findByZipCodeAndPeanutScoreNotNullOrderByPeanutScore("78910")).thenReturn(restaurants);
+
+        List<RestaurantDTO> result = restaurantController.searchRestaurants("78910", "peanut");
+
+        assertNotNull(result);
+        assertEquals(3, result.size());
+        verify(restaurantRepository, times(1)).findByZipCodeAndPeanutScoreNotNullOrderByPeanutScore(any());
     }
 
     @Test
