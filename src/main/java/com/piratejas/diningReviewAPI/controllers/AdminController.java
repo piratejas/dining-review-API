@@ -1,7 +1,6 @@
 package com.piratejas.diningReviewAPI.controllers;
 
 import com.piratejas.diningReviewAPI.enums.ReviewStatus;
-import com.piratejas.diningReviewAPI.utils.RestaurantUtils;
 import com.piratejas.diningReviewAPI.models.AdminReviewAction;
 import com.piratejas.diningReviewAPI.models.Restaurant;
 import com.piratejas.diningReviewAPI.models.Review;
@@ -13,6 +12,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.piratejas.diningReviewAPI.utils.RestaurantUtils.updateRestaurantScores;
 
 @RequestMapping("/admin")
 @RestController
@@ -51,7 +52,7 @@ public class AdminController {
 
         if (adminReviewAction.getApproveReview()) {
             review.setStatus(ReviewStatus.APPROVED);
-            Restaurant updatedRestaurant =  RestaurantUtils.updateRestaurantScores(restaurant, reviews);
+            Restaurant updatedRestaurant =  updateRestaurantScores(restaurant, reviews);
             restaurantRepository.save(updatedRestaurant);
         } else {
             review.setStatus(ReviewStatus.REJECTED);
