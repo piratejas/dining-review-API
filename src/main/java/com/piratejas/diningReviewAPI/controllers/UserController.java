@@ -44,7 +44,7 @@ public class UserController {
 
     @GetMapping("/{userName}")
     @ResponseStatus(HttpStatus.OK)
-    public UserDTO getUser(@PathVariable("userName") String name) {
+    public User getUser(@PathVariable("userName") String name) {
         validateNameInRequest(name);
 
         Optional<User> optionalExistingUser = userRepository.findByName(name);
@@ -52,9 +52,7 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username not found.");
         }
 
-        User existingUser = optionalExistingUser.get();
-
-        return convertUserToDTO(existingUser);
+        return optionalExistingUser.get();
     }
 
     @PutMapping("/{userName}")

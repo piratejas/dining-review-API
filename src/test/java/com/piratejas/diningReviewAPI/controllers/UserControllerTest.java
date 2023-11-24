@@ -98,14 +98,15 @@ class UserControllerTest {
     }
 
     @Test
-    void testGetUser_ReturnsCorrectDTO() {
+    void testGetUser_ReturnsCorrectUser() {
         when(userRepository.findByName(user.getName())).thenReturn(Optional.of(user));
-        UserDTO result = userController.getUser(user.getName());
+        User result = userController.getUser(user.getName());
 
-        assertEquals(UserDTO.class, result.getClass());
+        assertEquals(User.class, result.getClass());
         assertEquals("User123", result.getName());
         assertEquals("New York", result.getCity());
         assertEquals("NY", result.getState());
+        assertEquals("10001", result.getZipCode());
         verify(userRepository, times(1)).findByName(user.getName());
     }
 
