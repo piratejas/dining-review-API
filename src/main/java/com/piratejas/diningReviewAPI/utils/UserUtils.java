@@ -11,9 +11,9 @@ import java.util.Optional;
 
 public class UserUtils {
     public static void validateNewUser(User user, UserRepository userRepository) {
-        validateNameInRequest(user.getName());
+        validateNameInRequest(user.getUsername());
 
-        Optional<User> existingUser = userRepository.findByName(user.getName());
+        Optional<User> existingUser = userRepository.findByUsername(user.getUsername());
         if (existingUser.isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Username is already in use.");
         }
@@ -49,7 +49,7 @@ public class UserUtils {
     public static UserDTO convertUserToDTO(User user) {
         UserDTO userDTO = new UserDTO();
 
-        userDTO.setName(user.getName());
+        userDTO.setName(user.getUsername());
         userDTO.setCity(user.getCity());
         userDTO.setState(user.getState());
 

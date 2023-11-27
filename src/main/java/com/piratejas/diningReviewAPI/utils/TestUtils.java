@@ -44,7 +44,7 @@ public class TestUtils {
 
     public static User createValidUser() {
         User user = new User();
-        user.setName("User123");
+        user.setUsername("User123");
         user.setCity("New York");
         user.setState("NY");
         user.setZipCode("10001");

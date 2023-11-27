@@ -37,7 +37,7 @@ class UserControllerTest {
 
     @Test
     void testAddUser_ValidUser() {
-        when(userRepository.findByName(user.getName())).thenReturn(Optional.empty());
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.empty());
 
         assertDoesNotThrow(() -> userController.addUser(user));
         verify(userRepository, times(1)).save(user);
@@ -45,7 +45,7 @@ class UserControllerTest {
 
     @Test
     void testAddUser_NameAlreadyInUse() {
-        when(userRepository.findByName(user.getName())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> userController.addUser(user));
 
         assertEquals(HttpStatus.CONFLICT, exception.getStatusCode());
@@ -55,7 +55,7 @@ class UserControllerTest {
 
     @Test
     void testAddUser_MissingUsername() {
-        user.setName(null);
+        user.setUsername(null);
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> userController.addUser(user));
 
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
@@ -81,33 +81,33 @@ class UserControllerTest {
 
     @Test
     void testGetUser_ValidUsername() {
-        when(userRepository.findByName(user.getName())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
 
-        assertDoesNotThrow(() -> userController.getUser(user.getName()));
-        verify(userRepository, times(1)).findByName(user.getName());
+        assertDoesNotThrow(() -> userController.getUser(user.getUsername()));
+        verify(userRepository, times(1)).findByUsername(user.getUsername());
     }
 
     @Test
     void testGetUser_InvalidUsername() {
-        when(userRepository.findByName(user.getName())).thenReturn(Optional.empty());
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> userController.getUser(user.getName()));
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.empty());
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> userController.getUser(user.getUsername()));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("Username not found.", exception.getReason());
-        verify(userRepository, times(1)).findByName(user.getName());
+        verify(userRepository, times(1)).findByUsername(user.getUsername());
     }
 
     @Test
     void testGetUser_ReturnsCorrectUser() {
-        when(userRepository.findByName(user.getName())).thenReturn(Optional.of(user));
-        User result = userController.getUser(user.getName());
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
+        User result = userController.getUser(user.getUsername());
 
         assertEquals(User.class, result.getClass());
-        assertEquals("User123", result.getName());
+        assertEquals("User123", result.getUsername());
         assertEquals("New York", result.getCity());
         assertEquals("NY", result.getState());
         assertEquals("10001", result.getZipCode());
-        verify(userRepository, times(1)).findByName(user.getName());
+        verify(userRepository, times(1)).findByUsername(user.getUsername());
     }
 
     @Test
@@ -116,9 +116,9 @@ class UserControllerTest {
         userUpdate.setCity("Chicago");
         userUpdate.setState("IL");
         userUpdate.setCity("19019");
-        when(userRepository.findByName(user.getName())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
 
-        assertDoesNotThrow(() -> userController.updateUser(user.getName(), userUpdate));
+        assertDoesNotThrow(() -> userController.updateUser(user.getUsername(), userUpdate));
         verify(userRepository, times(1)).save(user);
     }
 
@@ -128,8 +128,8 @@ class UserControllerTest {
         userUpdate.setCity("Chicago");
         userUpdate.setState("IL");
         userUpdate.setCity("19019");
-        when(userRepository.findByName(user.getName())).thenReturn(Optional.empty());
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> userController.updateUser(user.getName(), userUpdate));
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.empty());
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> userController.updateUser(user.getUsername(), userUpdate));
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("Username not found.", exception.getReason());
@@ -139,11 +139,11 @@ class UserControllerTest {
     @Test
     void testUpdateUser_MissingNameInUpdate() {
         User userUpdate = createValidUser();
-        userUpdate.setName(null);
+        userUpdate.setUsername(null);
         userUpdate.setCity("Chicago");
         userUpdate.setState("IL");
         userUpdate.setCity("19019");
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> userController.updateUser(user.getName(), userUpdate));
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> userController.updateUser(user.getUsername(), userUpdate));
 
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
         assertEquals("Username is missing.", exception.getReason());

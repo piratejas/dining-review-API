@@ -16,6 +16,7 @@ import static com.piratejas.diningReviewAPI.utils.UserUtils.*;
 
 @RequestMapping("/users")
 @RestController
+//@CrossOrigin("*")
 public class UserController {
     private final UserRepository userRepository;
 
@@ -47,7 +48,7 @@ public class UserController {
     public User getUser(@PathVariable("userName") String name) {
         validateNameInRequest(name);
 
-        Optional<User> optionalExistingUser = userRepository.findByName(name);
+        Optional<User> optionalExistingUser = userRepository.findByUsername(name);
         if (optionalExistingUser.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username not found.");
         }
@@ -58,9 +59,9 @@ public class UserController {
     @PutMapping("/{userName}")
     @ResponseStatus(HttpStatus.OK)
     public void updateUser(@PathVariable("userName") String name, @RequestBody User userUpdate) {
-        validateNameInRequest(userUpdate.getName());
+        validateNameInRequest(userUpdate.getUsername());
 
-        Optional<User> optionalExistingUser = userRepository.findByName(name);
+        Optional<User> optionalExistingUser = userRepository.findByUsername(name);
         if (optionalExistingUser.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username not found.");
         }

@@ -43,7 +43,7 @@ public class ReviewControllerTest {
     @Test
     void testAddReview_ValidReview() {
         when(restaurantRepository.findById(review.getRestaurantId())).thenReturn(Optional.of(new Restaurant()));
-        when(userRepository.findByName(review.getSubmittedBy())).thenReturn(Optional.of(new User()));
+        when(userRepository.findByUsername(review.getSubmittedBy())).thenReturn(Optional.of(new User()));
 
         assertDoesNotThrow(() -> reviewController.addReview(review));
         verify(reviewRepository, times(1)).save(review);
@@ -52,7 +52,7 @@ public class ReviewControllerTest {
     @Test
     void testAddReview_InvalidRestaurantId() {
         when(restaurantRepository.findById(review.getRestaurantId())).thenReturn(Optional.empty());
-        when(userRepository.findByName(review.getSubmittedBy())).thenReturn(Optional.of(new User()));
+        when(userRepository.findByUsername(review.getSubmittedBy())).thenReturn(Optional.of(new User()));
         ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> reviewController.addReview(review));
 
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, e.getStatusCode());
@@ -93,7 +93,7 @@ public class ReviewControllerTest {
     @Test
     void testAddReview_UserNotRegistered() {
         when(restaurantRepository.findById(review.getRestaurantId())).thenReturn(Optional.of(new Restaurant()));
-        when(userRepository.findByName(review.getSubmittedBy())).thenReturn(Optional.empty());
+        when(userRepository.findByUsername(review.getSubmittedBy())).thenReturn(Optional.empty());
         Throwable e = assertThrows(ResponseStatusException.class, () -> reviewController.addReview(review));
 
         assertEquals("422 UNPROCESSABLE_ENTITY \"User is not registered.\"", e.getMessage());

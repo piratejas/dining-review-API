@@ -27,7 +27,7 @@ class UserUtilsTest {
     @Test
     public void testValidateNewUser_ValidUser() {
         User validUser = createValidUser();
-        when(userRepository.findByName(anyString())).thenReturn(Optional.empty());
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
 
         validateNewUser(validUser, userRepository);
     }
@@ -35,7 +35,7 @@ class UserUtilsTest {
     @Test
     public void testValidateNewUser_NullName() {
         User user = createValidUser();
-        user.setName(null);
+        user.setUsername(null);
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> validateNewUser(user, userRepository));
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
@@ -45,7 +45,7 @@ class UserUtilsTest {
     @Test
     public void testValidateNewUser_DuplicateUsername() {
         User existingUser = createValidUser();
-        when(userRepository.findByName(anyString())).thenReturn(Optional.of(existingUser));
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(existingUser));
 
         User user = createValidUser();
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> validateNewUser(user, userRepository));
@@ -57,7 +57,7 @@ class UserUtilsTest {
     public void testPatchExistingUser() {
         User existingUser = createValidUser();
         User userUpdate = createValidUser();
-        userUpdate.setName("Bob");
+        userUpdate.setUsername("Bob");
         userUpdate.setCity("New City");
         userUpdate.setState("NS");
         userUpdate.setZipCode("67890");
@@ -67,7 +67,7 @@ class UserUtilsTest {
 
         patchExistingUser(existingUser, userUpdate);
 
-        assertEquals("User123", existingUser.getName());
+        assertEquals("User123", existingUser.getUsername());
         assertEquals("New City", existingUser.getCity());
         assertEquals("NS", existingUser.getState());
         assertEquals("67890", existingUser.getZipCode());

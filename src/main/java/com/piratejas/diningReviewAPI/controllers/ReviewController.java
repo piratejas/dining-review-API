@@ -55,7 +55,7 @@ public class ReviewController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Review must contain at least one rating.");
         }
 
-        Optional<User> optionalUser = userRepository.findByName(review.getSubmittedBy());
+        Optional<User> optionalUser = userRepository.findByUsername(review.getSubmittedBy());
         if (optionalUser.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "User is not registered.");
         }
