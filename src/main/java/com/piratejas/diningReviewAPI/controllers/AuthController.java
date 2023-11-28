@@ -2,6 +2,7 @@ package com.piratejas.diningReviewAPI.controllers;
 
 
 import com.piratejas.diningReviewAPI.models.LoginResponseDTO;
+import com.piratejas.diningReviewAPI.models.LoginDTO;
 import com.piratejas.diningReviewAPI.models.RegistrationDTO;
 import com.piratejas.diningReviewAPI.models.User;
 import com.piratejas.diningReviewAPI.services.AuthenticationService;
@@ -17,12 +18,12 @@ public class AuthController {
     private AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public User registerUser(@RequestBody User body) {
-        return authenticationService.registerUser(body.getUsername(), body.getPassword());
+    public User registerUser(@RequestBody RegistrationDTO newUser) {
+        return authenticationService.registerUser(newUser);
     }
 
     @PostMapping("/login")
-    public LoginResponseDTO loginUser(@RequestBody RegistrationDTO body){
+    public LoginResponseDTO loginUser(@RequestBody LoginDTO body){
         return authenticationService.loginUser(body.getUsername(), body.getPassword());
     }
 }

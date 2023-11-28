@@ -1,8 +1,6 @@
 package com.piratejas.diningReviewAPI.services;
 
-import com.piratejas.diningReviewAPI.models.LoginResponseDTO;
-import com.piratejas.diningReviewAPI.models.Role;
-import com.piratejas.diningReviewAPI.models.User;
+import com.piratejas.diningReviewAPI.models.*;
 import com.piratejas.diningReviewAPI.repositories.RoleRepository;
 import com.piratejas.diningReviewAPI.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,17 +34,17 @@ public class AuthenticationService {
     @Autowired
     private TokenService tokenService;
 
-    public User registerUser(String username, String password) {
+    public User registerUser(RegistrationDTO newUser) {
 
-        String encodedPassword = passwordEncoder.encode(password);
-        //TODO: register user -> create account with all fields
+        String encodedPassword = passwordEncoder.encode(newUser.getPassword());
+
         Role userRole = roleRepository.findByAuthority("USER").get();
 
         Set<Role> authorities = new HashSet<>();
-
         authorities.add(userRole);
 
-        return userRepository.save(new User(0L, username, encodedPassword, authorities));
+        User user = new User(0L, newUser.getUsername(), encodedPassword, authorities, newUser.getCity(), newUser.getCounty(), newUser.getPostCode(), newUser.getPeanutAllergy(), newUser.getEggAllergy(), newUser.getDairyAllergy());
+        return userRepository.save(user);
     }
 
     public LoginResponseDTO loginUser(String username, String password) {
