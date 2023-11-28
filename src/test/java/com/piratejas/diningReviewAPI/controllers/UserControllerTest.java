@@ -75,7 +75,7 @@ class UserControllerTest {
         assertEquals(1, result.size());
         assertEquals("User123", result.get(0).getName());
         assertEquals("New York", result.get(0).getCity());
-        assertEquals("NY", result.get(0).getState());
+        assertEquals("NY", result.get(0).getCounty());
         verify(userRepository, times(1)).findAll();
     }
 
@@ -105,8 +105,8 @@ class UserControllerTest {
         assertEquals(User.class, result.getClass());
         assertEquals("User123", result.getUsername());
         assertEquals("New York", result.getCity());
-        assertEquals("NY", result.getState());
-        assertEquals("10001", result.getZipCode());
+        assertEquals("NY", result.getCounty());
+        assertEquals("10001", result.getPostCode());
         verify(userRepository, times(1)).findByUsername(user.getUsername());
     }
 
@@ -114,7 +114,7 @@ class UserControllerTest {
     void testUpdateUser_OK() {
         User userUpdate = createValidUser();
         userUpdate.setCity("Chicago");
-        userUpdate.setState("IL");
+        userUpdate.setCounty("IL");
         userUpdate.setCity("19019");
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
 
@@ -126,7 +126,7 @@ class UserControllerTest {
     void testUpdateUser_UsernameNotFound() {
         User userUpdate = createValidUser();
         userUpdate.setCity("Chicago");
-        userUpdate.setState("IL");
+        userUpdate.setCounty("IL");
         userUpdate.setCity("19019");
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.empty());
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> userController.updateUser(user.getUsername(), userUpdate));
@@ -141,7 +141,7 @@ class UserControllerTest {
         User userUpdate = createValidUser();
         userUpdate.setUsername(null);
         userUpdate.setCity("Chicago");
-        userUpdate.setState("IL");
+        userUpdate.setCounty("IL");
         userUpdate.setCity("19019");
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> userController.updateUser(user.getUsername(), userUpdate));
 

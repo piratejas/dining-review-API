@@ -59,8 +59,8 @@ class UserUtilsTest {
         User userUpdate = createValidUser();
         userUpdate.setUsername("Bob");
         userUpdate.setCity("New City");
-        userUpdate.setState("NS");
-        userUpdate.setZipCode("67890");
+        userUpdate.setCounty("NS");
+        userUpdate.setPostCode("67890");
         userUpdate.setPeanutAllergy(false);
         userUpdate.setEggAllergy(true);
         userUpdate.setDairyAllergy(false);
@@ -69,8 +69,8 @@ class UserUtilsTest {
 
         assertEquals("User123", existingUser.getUsername());
         assertEquals("New City", existingUser.getCity());
-        assertEquals("NS", existingUser.getState());
-        assertEquals("67890", existingUser.getZipCode());
+        assertEquals("NS", existingUser.getCounty());
+        assertEquals("67890", existingUser.getPostCode());
         assertFalse(existingUser.getPeanutAllergy());
         assertTrue(existingUser.getEggAllergy());
         assertFalse(existingUser.getDairyAllergy());
@@ -84,7 +84,7 @@ class UserUtilsTest {
 
         assertEquals("User123", userDTO.getName());
         assertEquals("New York", userDTO.getCity());
-        assertEquals("NY", userDTO.getState());
+        assertEquals("NY", userDTO.getCounty());
     }
 
 }

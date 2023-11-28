@@ -29,11 +29,11 @@ public class UserUtils {
         if (!ObjectUtils.isEmpty(userUpdate.getCity())) {
             existingUser.setCity(userUpdate.getCity());
         }
-        if (!ObjectUtils.isEmpty(userUpdate.getState())) {
-            existingUser.setState(userUpdate.getState());
+        if (!ObjectUtils.isEmpty(userUpdate.getCounty())) {
+            existingUser.setCounty(userUpdate.getCounty());
         }
-        if (!ObjectUtils.isEmpty(userUpdate.getZipCode())) {
-            existingUser.setZipCode(userUpdate.getZipCode());
+        if (!ObjectUtils.isEmpty(userUpdate.getPostCode())) {
+            existingUser.setPostCode(userUpdate.getPostCode());
         }
         if (!ObjectUtils.isEmpty(userUpdate.getEggAllergy())) {
             existingUser.setEggAllergy(userUpdate.getEggAllergy());
@@ -51,7 +51,7 @@ public class UserUtils {
 
         userDTO.setName(user.getUsername());
         userDTO.setCity(user.getCity());
-        userDTO.setState(user.getState());
+        userDTO.setCounty(user.getCounty());
 
         return userDTO;
     }

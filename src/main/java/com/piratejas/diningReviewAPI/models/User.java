@@ -47,10 +47,10 @@ public class User implements UserDetails {
     private String city;
     @Getter
     @Setter
-    private String state;
+    private String county;
     @Getter
     @Setter
-    private String zipCode;
+    private String postCode;
 
     @Getter
     @Setter
