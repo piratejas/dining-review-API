@@ -3,6 +3,8 @@ package com.piratejas.diningReviewAPI.services;
 import com.piratejas.diningReviewAPI.models.*;
 import com.piratejas.diningReviewAPI.repositories.RoleRepository;
 import com.piratejas.diningReviewAPI.repositories.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -10,6 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -45,7 +48,7 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
-    public LoginResponseDTO loginUser(String username, String password) {
+    public ResponseEntity<LoginResponseDTO> loginUser(String username, String password) {
 
         try {
             Authentication auth = authenticationManager.authenticate(
@@ -54,10 +57,10 @@ public class AuthenticationService {
 
             String token = tokenService.generateJwt(auth);
 
-            return new LoginResponseDTO(userRepository.findByUsername(username).get(), token);
+            return ResponseEntity.ok(new LoginResponseDTO(username, token));
 
         } catch(AuthenticationException e) {
-            return new LoginResponseDTO(null, "");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponseDTO(null, ""));
         }
     }
 

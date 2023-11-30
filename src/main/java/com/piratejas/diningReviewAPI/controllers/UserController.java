@@ -16,7 +16,7 @@ import static com.piratejas.diningReviewAPI.utils.UserUtils.*;
 
 @RequestMapping("/users")
 @RestController
-//@CrossOrigin("*")
+@CrossOrigin("*")
 public class UserController {
     private final UserRepository userRepository;
 
