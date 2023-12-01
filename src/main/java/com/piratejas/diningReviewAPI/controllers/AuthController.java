@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("*")
 public class AuthController {
 
-    @Autowired
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
+
+    public AuthController(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
 
     @PostMapping("/register")
     public User registerUser(@RequestBody RegistrationDTO newUser) {

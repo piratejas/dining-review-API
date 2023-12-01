@@ -3,71 +3,44 @@ package com.piratejas.diningReviewAPI.controllers;
 
 import com.piratejas.diningReviewAPI.models.User;
 import com.piratejas.diningReviewAPI.models.UserDTO;
-import com.piratejas.diningReviewAPI.repositories.UserRepository;
+import com.piratejas.diningReviewAPI.services.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
-import static com.piratejas.diningReviewAPI.utils.UserUtils.*;
 
 @RequestMapping("/users")
 @RestController
 @CrossOrigin("*")
 public class UserController {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void addUser(@RequestBody User user) {
-        validateNewUser(user, userRepository);
-        userRepository.save(user);
+        userService.addUser(user);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getAllUsers() {
-        Iterable<User> allUsers = userRepository.findAll();
-        List<UserDTO> allUsersDTO = new ArrayList<>();
-        for (User user : allUsers) {
-            UserDTO userDTO = convertUserToDTO(user);
-            allUsersDTO.add(userDTO);
-        }
-        return allUsersDTO;
+        return userService.getAllUsers();
     }
 
     @GetMapping("/{userName}")
     @ResponseStatus(HttpStatus.OK)
-    public User getUser(@PathVariable("userName") String name) {
-        validateNameInRequest(name);
-
-        Optional<User> optionalExistingUser = userRepository.findByUsername(name);
-        if (optionalExistingUser.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username not found.");
-        }
-
-        return optionalExistingUser.get();
+    public UserDetails getUser(@PathVariable("userName") String name) {
+        return userService.loadUserByUsername(name);
     }
 
     @PutMapping("/{userName}")
     @ResponseStatus(HttpStatus.OK)
     public void updateUser(@PathVariable("userName") String name, @RequestBody User userUpdate) {
-        validateNameInRequest(userUpdate.getUsername());
-
-        Optional<User> optionalExistingUser = userRepository.findByUsername(name);
-        if (optionalExistingUser.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username not found.");
-        }
-
-        User existingUser = optionalExistingUser.get();
-        patchExistingUser(existingUser, userUpdate);
-        userRepository.save(existingUser);
+        userService.updateUser(name, userUpdate);
     }
 }
