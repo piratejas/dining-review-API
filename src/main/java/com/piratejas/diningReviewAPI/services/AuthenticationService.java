@@ -1,5 +1,7 @@
 package com.piratejas.diningReviewAPI.services;
 
+import com.piratejas.diningReviewAPI.errors.exceptions.LoginException;
+import com.piratejas.diningReviewAPI.errors.exceptions.UsernameConflictException;
 import com.piratejas.diningReviewAPI.models.*;
 import com.piratejas.diningReviewAPI.repositories.RoleRepository;
 import com.piratejas.diningReviewAPI.repositories.UserRepository;
@@ -16,6 +18,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.piratejas.diningReviewAPI.utils.UserUtils.validateNewUser;
 
 @Service
 @Transactional
@@ -35,17 +39,25 @@ public class AuthenticationService {
         this.tokenService = tokenService;
     }
 
-    public User registerUser(RegistrationDTO newUser) {
+    public void registerUser(RegistrationDTO newUser) {
 
-        String encodedPassword = passwordEncoder.encode(newUser.getPassword());
+        try {
+            String encodedPassword = passwordEncoder.encode(newUser.getPassword());
 
-        Role userRole = roleRepository.findByAuthority("USER").get();
+            Role userRole = roleRepository.findByAuthority("USER").orElseThrow(() -> new IllegalStateException("Default role not found"));
 
-        Set<Role> authorities = new HashSet<>();
-        authorities.add(userRole);
+            Set<Role> authorities = new HashSet<>();
+            authorities.add(userRole);
 
-        User user = new User(0L, newUser.getUsername(), encodedPassword, authorities, newUser.getCity(), newUser.getCounty(), newUser.getPostCode(), newUser.getPeanutAllergy(), newUser.getEggAllergy(), newUser.getDairyAllergy());
-        return userRepository.save(user);
+            User user = new User(0L, newUser.getUsername(), encodedPassword, authorities, newUser.getCity(), newUser.getCounty(), newUser.getPostCode(), newUser.getPeanutAllergy(), newUser.getEggAllergy(), newUser.getDairyAllergy());
+
+            validateNewUser(user, userRepository);
+
+            userRepository.save(user);
+        } catch (ResponseStatusException e) {
+            System.out.println(e);
+            throw new UsernameConflictException(e.getReason());
+        }
     }
 
     public ResponseEntity<LoginResponseDTO> loginUser(String username, String password) {
@@ -60,7 +72,7 @@ public class AuthenticationService {
             return ResponseEntity.ok(new LoginResponseDTO(username, token));
 
         } catch(AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponseDTO(null, ""));
+            throw new LoginException("Authentication failed");
         }
     }
 

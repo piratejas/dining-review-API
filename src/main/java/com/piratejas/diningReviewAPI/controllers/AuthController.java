@@ -22,8 +22,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public User registerUser(@RequestBody RegistrationDTO newUser) {
-        return authenticationService.registerUser(newUser);
+    public void registerUser(@RequestBody RegistrationDTO newUser) {
+        authenticationService.registerUser(newUser);
     }
 
     @PostMapping("/login")
