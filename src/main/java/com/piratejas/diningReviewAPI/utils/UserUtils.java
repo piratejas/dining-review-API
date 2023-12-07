@@ -1,5 +1,7 @@
 package com.piratejas.diningReviewAPI.utils;
 
+import com.piratejas.diningReviewAPI.errors.exceptions.UsernameConflictException;
+import com.piratejas.diningReviewAPI.errors.exceptions.UsernameMissingException;
 import com.piratejas.diningReviewAPI.models.User;
 import com.piratejas.diningReviewAPI.models.UserDTO;
 import com.piratejas.diningReviewAPI.repositories.UserRepository;
@@ -15,13 +17,13 @@ public class UserUtils {
 
         Optional<User> existingUser = userRepository.findByUsername(user.getUsername());
         if (existingUser.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username is already in use.");
+            throw new UsernameConflictException("Username is already in use.");
         }
     }
 
     public static void validateNameInRequest(String name) {
         if (ObjectUtils.isEmpty(name)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is missing.");
+            throw new UsernameMissingException("Username is missing.");
         }
     }
 

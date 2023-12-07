@@ -2,6 +2,7 @@ package com.piratejas.diningReviewAPI.errors;
 
 import com.piratejas.diningReviewAPI.errors.exceptions.LoginException;
 import com.piratejas.diningReviewAPI.errors.exceptions.UsernameConflictException;
+import com.piratejas.diningReviewAPI.errors.exceptions.UsernameMissingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -26,6 +27,13 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorResponse> handleUsernameConflictException(UsernameConflictException ex, WebRequest request) {
         String error = ex.getMessage();
         ErrorResponse errorResponse = getErrorResponse(request, HttpStatus.CONFLICT.value(), error);
+        return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+    }
+
+    @ExceptionHandler(UsernameMissingException.class)
+    public ResponseEntity<ErrorResponse> handleUsernameMissingException(UsernameMissingException ex, WebRequest request) {
+        String error = ex.getMessage();
+        ErrorResponse errorResponse = getErrorResponse(request, HttpStatus.BAD_REQUEST.value(), error);
         return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
     }
 }

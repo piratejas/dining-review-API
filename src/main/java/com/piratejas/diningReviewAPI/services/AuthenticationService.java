@@ -2,6 +2,7 @@ package com.piratejas.diningReviewAPI.services;
 
 import com.piratejas.diningReviewAPI.errors.exceptions.LoginException;
 import com.piratejas.diningReviewAPI.errors.exceptions.UsernameConflictException;
+import com.piratejas.diningReviewAPI.errors.exceptions.UsernameMissingException;
 import com.piratejas.diningReviewAPI.models.*;
 import com.piratejas.diningReviewAPI.repositories.RoleRepository;
 import com.piratejas.diningReviewAPI.repositories.UserRepository;
@@ -42,19 +43,22 @@ public class AuthenticationService {
         try {
             String encodedPassword = passwordEncoder.encode(newUser.getPassword());
 
-            Role userRole = roleRepository.findByAuthority("USER").orElseThrow(() -> new IllegalStateException("Default role not found"));
+            Role userRole =
+                    roleRepository.findByAuthority("USER").orElseThrow(() -> new IllegalStateException("Default role not found"));
 
             Set<Role> authorities = new HashSet<>();
             authorities.add(userRole);
 
-            User user = new User(0L, newUser.getUsername(), encodedPassword, authorities, newUser.getCity(), newUser.getCounty(), newUser.getPostcode(), newUser.getPeanutAllergy(), newUser.getEggAllergy(), newUser.getDairyAllergy());
+            User user =
+                    new User(0L, newUser.getUsername(), encodedPassword, authorities, newUser.getCity(), newUser.getCounty(), newUser.getPostcode(), newUser.getPeanutAllergy(), newUser.getEggAllergy(), newUser.getDairyAllergy());
 
             validateNewUser(user, userRepository);
 
             userRepository.save(user);
-        } catch (ResponseStatusException e) {
-//            TODO: catch username missing
-            throw new UsernameConflictException(e.getReason());
+        } catch (UsernameMissingException e) {
+            throw new UsernameMissingException(e.getMessage());
+        } catch (UsernameConflictException e) {
+            throw new UsernameConflictException(e.getMessage());
         }
     }
 
