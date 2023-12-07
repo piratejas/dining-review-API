@@ -50,7 +50,7 @@ public class User implements UserDetails {
     private String county;
     @Getter
     @Setter
-    private String postCode;
+    private String postcode;
 
     @Getter
     @Setter

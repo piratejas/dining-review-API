@@ -47,7 +47,7 @@ public class TestUtils {
         user.setUsername("User123");
         user.setCity("New York");
         user.setCounty("NY");
-        user.setPostCode("10001");
+        user.setPostcode("10001");
         user.setPeanutAllergy(false);
         user.setEggAllergy(true);
         user.setDairyAllergy(false);

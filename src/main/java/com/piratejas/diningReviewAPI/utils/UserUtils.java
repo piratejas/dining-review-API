@@ -32,8 +32,8 @@ public class UserUtils {
         if (!ObjectUtils.isEmpty(userUpdate.getCounty())) {
             existingUser.setCounty(userUpdate.getCounty());
         }
-        if (!ObjectUtils.isEmpty(userUpdate.getPostCode())) {
-            existingUser.setPostCode(userUpdate.getPostCode());
+        if (!ObjectUtils.isEmpty(userUpdate.getPostcode())) {
+            existingUser.setPostcode(userUpdate.getPostcode());
         }
         if (!ObjectUtils.isEmpty(userUpdate.getEggAllergy())) {
             existingUser.setEggAllergy(userUpdate.getEggAllergy());

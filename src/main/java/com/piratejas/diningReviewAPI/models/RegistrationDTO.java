@@ -8,7 +8,7 @@ public class RegistrationDTO {
     private String password;
     private String city;
     private String county;
-    private String postCode;
+    private String postcode;
     private Boolean peanutAllergy;
     private Boolean eggAllergy;
     private Boolean dairyAllergy;

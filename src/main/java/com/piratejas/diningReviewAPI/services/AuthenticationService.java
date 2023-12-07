@@ -5,8 +5,6 @@ import com.piratejas.diningReviewAPI.errors.exceptions.UsernameConflictException
 import com.piratejas.diningReviewAPI.models.*;
 import com.piratejas.diningReviewAPI.repositories.RoleRepository;
 import com.piratejas.diningReviewAPI.repositories.UserRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -49,18 +47,18 @@ public class AuthenticationService {
             Set<Role> authorities = new HashSet<>();
             authorities.add(userRole);
 
-            User user = new User(0L, newUser.getUsername(), encodedPassword, authorities, newUser.getCity(), newUser.getCounty(), newUser.getPostCode(), newUser.getPeanutAllergy(), newUser.getEggAllergy(), newUser.getDairyAllergy());
+            User user = new User(0L, newUser.getUsername(), encodedPassword, authorities, newUser.getCity(), newUser.getCounty(), newUser.getPostcode(), newUser.getPeanutAllergy(), newUser.getEggAllergy(), newUser.getDairyAllergy());
 
             validateNewUser(user, userRepository);
 
             userRepository.save(user);
         } catch (ResponseStatusException e) {
-            System.out.println(e);
+//            TODO: catch username missing
             throw new UsernameConflictException(e.getReason());
         }
     }
 
-    public ResponseEntity<LoginResponseDTO> loginUser(String username, String password) {
+    public LoginResponseDTO loginUser(String username, String password) {
 
         try {
             Authentication auth = authenticationManager.authenticate(
@@ -69,10 +67,10 @@ public class AuthenticationService {
 
             String token = tokenService.generateJwt(auth);
 
-            return ResponseEntity.ok(new LoginResponseDTO(username, token));
+            return new LoginResponseDTO(username, token);
 
         } catch(AuthenticationException e) {
-            throw new LoginException("Authentication failed");
+            throw new LoginException(e.getMessage());
         }
     }
 
